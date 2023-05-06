@@ -57,7 +57,7 @@ app.get(
   (req, res) => {
     try {
       // Redirect user to the home page after authentication
-      res.redirect("http://localhost:4000/user/google-verify");
+      res.redirect("https://jittery-shirt-tuna.cyclic.app/user/google-verify");
     } catch (error) {
       console.log(error);
       res.send(error.message);
