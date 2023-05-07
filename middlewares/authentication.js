@@ -4,7 +4,8 @@ const db = require("../models/index");
 const authentication = async (req, res, next) => {
   try {
     const token = req.header("Authorization").split(" ")[1];
-    console.log(token);
+    
+    console.log(req.header("Authorization"));
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await db.user.findOne({
       where: {
