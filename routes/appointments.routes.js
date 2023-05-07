@@ -4,6 +4,7 @@ const { authentication } = require("../middlewares/authentication");
 
 const AppointmentRouter = express.Router();
 
+const Sequelize = require("sequelize");
 const db = require("../models");
 const { auth } = require("../middlewares/auth");
 const { slots } = require("../mongodb/slots.model");
@@ -13,7 +14,7 @@ AppointmentRouter.use(authentication);
 
 AppointmentRouter.post("/book-appointment", async (req, res) => {
   try {
-    const { patientName, doctorName, date, time, doctorId } = req.body;
+    const { doctorName, date, time, doctorId } = req.body;
 
     // check the slot availability
     const slotBooked = await slots.findOne({
@@ -28,7 +29,7 @@ AppointmentRouter.post("/book-appointment", async (req, res) => {
     }
 
     const appointment = await db.appointments.create({
-      patientName : req.user.dataValues.name,
+      patientName,
       doctorName,
       date,
       time,
@@ -48,6 +49,30 @@ AppointmentRouter.post("/book-appointment", async (req, res) => {
 
     await slots(slotDetails).save();
 
+    // reduce availability of doctor by 1
+
+    const doctor = await db.doctors.findOne({
+      where: {
+        id: doctorId,
+      },
+    });
+
+    if (!doctor) {
+      res.status(400).json({ msg: "Doctor does not exist" });
+      return;
+    }
+
+    await db.doctors.update(
+      {
+        availability: doctor.dataValues.availability - 1,
+      },
+      {
+        where: {
+          id: doctorId,
+        },
+      }
+    );
+
     if (appointment) {
       res.status(201).json({
         msg: "Appointment booked successfully",
@@ -61,6 +86,7 @@ AppointmentRouter.post("/book-appointment", async (req, res) => {
     res.status(500).json({ msg: "Something went wrong" });
   }
 });
+
 // check slot availability
 
 AppointmentRouter.post("/check-slot-availability", async (req, res) => {
@@ -211,5 +237,41 @@ AppointmentRouter.get(
     }
   }
 );
+
+// notifications to the user
+
+AppointmentRouter.get("/notifications", async (req, res) => {
+  try {
+
+    const Op = Sequelize.Op;
+
+    const notifications1 = await db.appointments.findAll({
+      where: {
+        patientId: req.user.dataValues.id,
+        date: {
+          [Op.gte]: new Date(),
+        },
+      },
+    });
+
+    const notifications2 = await db.appointments.findAll({
+
+      where: {
+        patientId: req.user.dataValues.id,
+        status: {
+          [Op.or]: ["approved", "cancelled"],
+        },
+      },
+    });
+
+    const notifications = [...notifications1, ...notifications2];
+
+    res.status(200).json({
+      notifications,
+    });
+  } catch (error) {
+    res.status(500).json({ msg: "Something went wrong" , error});
+  }
+});
 
 module.exports = { AppointmentRouter };
