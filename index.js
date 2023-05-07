@@ -1,5 +1,6 @@
 const express = require("express");
 const { UserRouter } = require("./routes/users.routes");
+const cookieParser = require('cookie-parser');
 require("dotenv").config();
 const db = require("./models/index");
 const cors = require("cors");
@@ -38,11 +39,13 @@ app.use("/user", UserRouter);
 app.use("/appointments", AppointmentRouter);
 app.use("/doctors", DoctorRouter);
 
+// app.get("/",(req,res)=>{
+//   app.use(express.static(path.join(__dirname,"../", "client")));
+//   res.sendFile(path.resolve(__dirname,"../", "client","index.html"));
+// });
 
-
-app.get("/",(req,res)=>{
-  app.use(express.static(path.join(__dirname,"../", "client")));
-  res.sendFile(path.resolve(__dirname,"../", "client","index.html"));
+app.get("/", (req, res) => {
+  res.send("Welcome to the Hospital Booking App");
 });
 
 // ------------------ Google auth -----------------------
@@ -55,7 +58,7 @@ app.get(
   (req, res) => {
     try {
       // Redirect user to the home page after authentication
-      res.redirect("http://localhost:4000/user/google-verify");
+      res.redirect("https://jittery-shirt-tuna.cyclic.app/user/google-verify");
     } catch (error) {
       console.log(error);
       res.send(error.message);
@@ -122,14 +125,27 @@ app.get("/auth/github", async (req, res) => {
 
     // save the user details in the database here
 
-    res.send({
-      msg: "Github authentication successful!",
-      token: tosendtoken,
-      user,
+    // set the token and username in the cookie
+    res.cookie("token", tosendtoken, {
+      httpOnly: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
+    res.cookie("username", user.name, {
+      httpOnly: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    // redirect the user to the frontend
+    res.redirect("http://localhost:5173/");
   } catch (error) {
     res.status(500).json({ msg: "Something went wrong" });
   }
+});
+
+// route to get the cookies
+app.get('/get-cookies', (req, res) => {
+  const { token, username } = req.cookies; // retrieve the cookies from the request
+  res.json({ token, username }); // send the cookies as a JSON response
 });
 
 // ------------------- github authentication ends -----------------------------

@@ -3,7 +3,7 @@ const db = require("../models/index");
 
 const authentication = async (req, res, next) => {
   try {
-    const token = req.header("Authorization").split(" ")[1];
+    const token = req.headers.authorization;
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await db.user.findOne({
       where: {
@@ -18,7 +18,7 @@ const authentication = async (req, res, next) => {
     req.user = user;
     next();
   } catch (error) {
-    res.status(401).send("Unauthenticated user");
+    res.status(401).json({msg : "Unauthenticated user"});
   }
 };
 
