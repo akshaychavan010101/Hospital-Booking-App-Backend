@@ -242,7 +242,6 @@ AppointmentRouter.get(
 
 AppointmentRouter.get("/notifications", async (req, res) => {
   try {
-
     const Op = Sequelize.Op;
 
     const notifications1 = await db.appointments.findAll({
@@ -251,16 +250,19 @@ AppointmentRouter.get("/notifications", async (req, res) => {
         date: {
           [Op.gte]: new Date(),
         },
+
+        isNotified: false,
       },
     });
 
     const notifications2 = await db.appointments.findAll({
-
       where: {
         patientId: req.user.dataValues.id,
         status: {
           [Op.or]: ["approved", "cancelled"],
         },
+
+        isNotified: false,
       },
     });
 
@@ -270,10 +272,9 @@ AppointmentRouter.get("/notifications", async (req, res) => {
       notifications,
     });
   } catch (error) {
-    res.status(500).json({ msg: "Something went wrong" , error});
+    res.status(500).json({ msg: "Something went wrong", error });
   }
 });
-
 // clear notifications
 
 AppointmentRouter.patch("/clear-notifications", async (req, res) => {
