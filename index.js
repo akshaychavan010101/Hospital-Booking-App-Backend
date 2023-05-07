@@ -126,11 +126,11 @@ app.get("/auth/github", async (req, res) => {
     // save the user details in the database here
 
     // set the token and username in the cookie
-    res.cookie("token", tosendtoken, {
+    req.cookie("token", tosendtoken, {
       httpOnly: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
-    res.cookie("username", user.name, {
+    req.cookie("username", user.name, {
       httpOnly: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
