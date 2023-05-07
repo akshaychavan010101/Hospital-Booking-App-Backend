@@ -274,4 +274,33 @@ AppointmentRouter.get("/notifications", async (req, res) => {
   }
 });
 
+// clear notifications
+
+AppointmentRouter.patch("/clear-notifications", async (req, res) => {
+  try {
+    //  all notifications ids of the user passed in the request body will be cleared
+
+    const { ids } = req.body;
+
+    // ids is an arr so update all the notifications with the ids
+
+    ids.map(async (id) => {
+      await db.appointments.update(
+        {
+          isNotified: true,
+        },
+        {
+          where: {
+            id,
+          },
+        }
+      );
+    });
+
+    res.status(200).json({ msg: "Appointment cleared" });
+  } catch (error) {
+    res.status(500).json({ msg: "Something went wrong" });
+  }
+});
+
 module.exports = { AppointmentRouter };
