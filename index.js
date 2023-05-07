@@ -1,5 +1,6 @@
 const express = require("express");
 const { UserRouter } = require("./routes/users.routes");
+const cookieParser = require('cookie-parser');
 require("dotenv").config();
 const db = require("./models/index");
 const cors = require("cors");
@@ -126,11 +127,11 @@ app.get("/auth/github", async (req, res) => {
 
     // set the token and username in the cookie
     res.cookie("token", tosendtoken, {
-      httpOnly: false,
+      httpOnly: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
     res.cookie("username", user.name, {
-      httpOnly: false,
+      httpOnly: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
@@ -139,6 +140,12 @@ app.get("/auth/github", async (req, res) => {
   } catch (error) {
     res.status(500).json({ msg: "Something went wrong" });
   }
+});
+
+// route to get the cookies
+app.get('/get-cookies', (req, res) => {
+  const { token, username } = req.cookies; // retrieve the cookies from the request
+  res.json({ token, username }); // send the cookies as a JSON response
 });
 
 // ------------------- github authentication ends -----------------------------
