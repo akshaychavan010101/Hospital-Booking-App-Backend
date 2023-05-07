@@ -124,11 +124,18 @@ app.get("/auth/github", async (req, res) => {
 
     // save the user details in the database here
 
-    res.send({
-      msg: "Github authentication successful!",
-      token: tosendtoken,
-      user,
+    // set the token and username in the cookie
+    res.cookie("token", tosendtoken, {
+      httpOnly: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
+    res.cookie("username", user.name, {
+      httpOnly: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    // redirect the user to the frontend
+    res.redirect("http://localhost:5173/");
   } catch (error) {
     res.status(500).json({ msg: "Something went wrong" });
   }
