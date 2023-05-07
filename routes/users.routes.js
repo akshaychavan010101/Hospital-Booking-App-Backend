@@ -134,6 +134,7 @@ UserRouter.post("/login", async (req, res) => {
         res.status(200).json({
           token,
           userName: user.name,
+          msg : "Login Successful"
         });
       } else {
         res.status(400).json({ msg: "Invalid credentials" });
