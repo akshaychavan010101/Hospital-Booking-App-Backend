@@ -29,7 +29,7 @@ AppointmentRouter.post("/book-appointment", async (req, res) => {
     }
 
     const appointment = await db.appointments.create({
-      patientName,
+      patientName :  req.user.dataValues.name,
       doctorName,
       date,
       time,
