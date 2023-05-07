@@ -28,7 +28,7 @@ AppointmentRouter.post("/book-appointment", async (req, res) => {
     }
 
     const appointment = await db.appointments.create({
-      patientName : req.user.dataValues.name,
+      patientName,
       doctorName,
       date,
       time,
@@ -48,30 +48,6 @@ AppointmentRouter.post("/book-appointment", async (req, res) => {
 
     await slots(slotDetails).save();
 
-    // reduce availability of doctor by 1
-
-    const doctor = await db.doctors.findOne({
-      where: {
-        id: doctorId,
-      },
-    });
-
-    if (!doctor) {
-      res.status(400).json({ msg: "Doctor does not exist" });
-      return;
-    }
-
-    await db.doctors.update(
-      {
-        availability: doctor.dataValues.availability - 1,
-      },
-      {
-        where: {
-          id: doctorId,
-        },
-      }
-    );
-
     if (appointment) {
       res.status(201).json({
         msg: "Appointment booked successfully",
@@ -85,7 +61,6 @@ AppointmentRouter.post("/book-appointment", async (req, res) => {
     res.status(500).json({ msg: "Something went wrong" });
   }
 });
-
 // check slot availability
 
 AppointmentRouter.post("/check-slot-availability", async (req, res) => {
