@@ -304,4 +304,6 @@ AppointmentRouter.patch("/clear-notifications", async (req, res) => {
   }
 });
 
+
 module.exports = { AppointmentRouter };
+
