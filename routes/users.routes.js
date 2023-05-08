@@ -65,7 +65,7 @@ UserRouter.get("/google-verify", async (req, res) => {
     res.cookie("token", tosendtoken, {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
-    res.cookie("userName", user.name, {
+    res.cookie("userName", displayName, {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
     
