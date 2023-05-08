@@ -73,7 +73,7 @@ UserRouter.get("/google-verify", async (req, res) => {
     res.redirect("http://localhost:5173/");
   } catch (error) {
     console.log(error)
-    res.status(500).json({ msg: "Something went wrong" });
+    res.status(500).json({ msg: "Something went wrong" , error  });
   }
 });
 
@@ -82,7 +82,7 @@ UserRouter.get('/get-cookies', (req, res) => {
   try{
     res.json({ cookies :  req.cookies }); // send the cookies as a JSON response
 }catch(error){
-    res.json({msg : "Something went wrong"})
+   res.status(500).json({ msg: "Something went wrong" , error  });
 } 
    // send the cookies as a JSON response
 });
