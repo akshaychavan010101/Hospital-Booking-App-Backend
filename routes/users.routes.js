@@ -57,8 +57,8 @@ UserRouter.get("/google-verify", async (req, res) => {
     });
 
     
-     req.session.token = token;
-     req.session.userName = displayName;
+//      req.session.token = token;
+//      req.session.userName = displayName;
     // set the token , username in the cookie and redirect to the home page
 
     // set the token and username in the cookie
@@ -80,12 +80,10 @@ UserRouter.get("/google-verify", async (req, res) => {
 // route to get the cookies
 UserRouter.get('/get-cookies', (req, res) => {
   try{
-    console.log(req.cookies);
-  res.json({ cookies :  req.session.token });
-  }catch(error){
-    console.log(error)
-  }
-  
+    res.json({ cookies :  req.cookies }); // send the cookies as a JSON response
+}catch(error){
+    res.json({msg : "Something went wrong"})
+} 
    // send the cookies as a JSON response
 });
 
