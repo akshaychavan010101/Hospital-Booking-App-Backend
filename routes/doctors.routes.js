@@ -4,7 +4,7 @@ const { auth } = require("../middlewares/auth");
 const DoctorRouter = express.Router();
 
 const db = require("../models");
-DoctorRouter.use(authentication);
+
 
 DoctorRouter.get("/single-doctor/:id", async (req, res) => {
   try {
@@ -37,7 +37,7 @@ DoctorRouter.get("/single-doctor/:id", async (req, res) => {
   }
 });
 
-DoctorRouter.post("/add-doctor",auth(["admin"]) , async (req, res) => {
+DoctorRouter.post("/add-doctor",authentication ,auth(["admin"]) , async (req, res) => {
   try {
     const {
       name,
@@ -116,7 +116,7 @@ DoctorRouter.get("/all-doctors", async (req, res) => {
   }
 });
 
-DoctorRouter.delete("/delete-doctor/:id",auth(["admin"]), async (req, res) => {
+DoctorRouter.delete("/delete-doctor/:id",authentication,auth(["admin"]), async (req, res) => {
   try {
     await db.doctors.destroy({
       where: {
@@ -139,7 +139,7 @@ DoctorRouter.delete("/delete-doctor/:id",auth(["admin"]), async (req, res) => {
   }
 });
 
-DoctorRouter.patch("/update-doctor/:id", auth(["admin"]),async (req, res) => {
+DoctorRouter.patch("/update-doctor/:id",authentication, auth(["admin"]),async (req, res) => {
   try {
     await db.doctors.update(req.body, {
       where: {
@@ -156,7 +156,7 @@ DoctorRouter.patch("/update-doctor/:id", auth(["admin"]),async (req, res) => {
   }
 });
 
-DoctorRouter.patch("/update-descdoctor/:id", auth(["admin"]),async (req, res) => {
+DoctorRouter.patch("/update-descdoctor/:id",authentication, auth(["admin"]),async (req, res) => {
   try {
     await db.descdoctors.update(req.body, {
       where: {
