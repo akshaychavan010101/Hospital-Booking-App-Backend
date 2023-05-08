@@ -142,6 +142,8 @@ UserRouter.post("/login", async (req, res) => {
           }
         );
         
+        console.log(user , "***");
+        
         if(user.role == "admin"){
               res.status(200).json({
               token,
@@ -150,13 +152,15 @@ UserRouter.post("/login", async (req, res) => {
               msg : "Login Successful"
             });
           return;
-        }
+        }else{
+           res.status(200).json({
+              token,
+              userName: user.name,
+              msg : "Login Successful"
+            });
+       }
 
-        res.status(200).json({
-          token,
-          userName: user.name,
-          msg : "Login Successful"
-        });
+       
       } else {
         res.status(400).json({ msg: "Invalid credentials" });
       }
