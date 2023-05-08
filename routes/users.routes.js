@@ -58,7 +58,7 @@ UserRouter.get("/google-verify", async (req, res) => {
 
     
      req.session.token = token;
-     req.session.userName = userInDb.name
+     req.session.userName = displayName;
     // set the token , username in the cookie and redirect to the home page
 
     // set the token and username in the cookie
