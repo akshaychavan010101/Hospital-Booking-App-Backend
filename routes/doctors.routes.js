@@ -154,7 +154,7 @@ DoctorRouter.patch("/update-doctor/:id", async (req, res) => {
   }
 });
 
-DoctorRouter.put("/update-descdoctor/:id", async (req, res) => {
+DoctorRouter.patch("/update-descdoctor/:id", async (req, res) => {
   try {
     await db.descdoctors.update(req.body, {
       where: {
