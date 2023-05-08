@@ -72,14 +72,21 @@ UserRouter.get("/google-verify", async (req, res) => {
     // redirect the user to the frontend
     res.redirect("http://localhost:5173/");
   } catch (error) {
+    console.log(error)
     res.status(500).json({ msg: "Something went wrong" });
   }
 });
 
 // route to get the cookies
 UserRouter.get('/get-cookies', (req, res) => {
-  console.log(req.cookies);
-  res.json({ cookies :  req.session.token }); // send the cookies as a JSON response
+  try{
+    console.log(req.cookies);
+  res.json({ cookies :  req.session.token });
+  }catch(error){
+    console.log(error)
+  }
+  
+   // send the cookies as a JSON response
 });
 
 // ------------------ google authentication  ends---------------------
