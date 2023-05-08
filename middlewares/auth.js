@@ -1,6 +1,6 @@
 const auth = (passedRole) => {
   return (req, res, next) => {
-    const { role } = req.user;
+    const { role } = req.user.dataValues;
     if (passedRole.includes(role)) {
       next();
     } else {
