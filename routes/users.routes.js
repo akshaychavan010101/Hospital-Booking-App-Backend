@@ -56,18 +56,7 @@ UserRouter.get("/google-verify", async (req, res) => {
       expiresIn: "7h",
     });
 
-    
-//      req.session.token = token;
-//      req.session.userName = displayName;
-    // set the token , username in the cookie and redirect to the home page
-
-    // set the token and username in the cookie
-    res.cookie("token", tosendtoken, {
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
-    res.cookie("userName", displayName, {
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
+ 
     
     // redirect the user to the frontend
     res.redirect("http://localhost:5173/");
