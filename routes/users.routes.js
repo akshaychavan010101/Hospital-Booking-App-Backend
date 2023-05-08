@@ -58,21 +58,28 @@ UserRouter.get("/google-verify", async (req, res) => {
 
     
      req.session.token = token;
+     req.session.userName = userInDb.name
     // set the token , username in the cookie and redirect to the home page
 
-    res.cookie("token", token, {
+    // set the token and username in the cookie
+    res.cookie("token", tosendtoken, {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
-
     res.cookie("userName", user.name, {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
     
-   
+    // redirect the user to the frontend
     res.redirect("http://localhost:5173/");
   } catch (error) {
     res.status(500).json({ msg: "Something went wrong" });
   }
+});
+
+// route to get the cookies
+UserRouter.get('/get-cookies', (req, res) => {
+  console.log(req.cookies);
+  res.json({ cookies :  req.session.token }); // send the cookies as a JSON response
 });
 
 // ------------------ google authentication  ends---------------------
