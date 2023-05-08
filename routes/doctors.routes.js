@@ -137,7 +137,7 @@ DoctorRouter.delete("/delete-doctor/:id", async (req, res) => {
   }
 });
 
-DoctorRouter.put("/update-doctor/:id", async (req, res) => {
+DoctorRouter.patch("/update-doctor/:id", async (req, res) => {
   try {
     await db.doctors.update(req.body, {
       where: {
