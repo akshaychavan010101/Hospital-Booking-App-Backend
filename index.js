@@ -16,8 +16,7 @@ const fetch = (...args) =>
   import("node-fetch").then(({ default: fetch }) => fetch(...args));
 const jwt = require("jsonwebtoken");
 const { DoctorRouter } = require("./routes/doctors.routes");
-let cookie_userName = "user";
-let cookie_token = "token"
+
 
 // ------------
 
@@ -125,8 +124,7 @@ app.get("/auth/github", async (req, res) => {
       }
     );
 
-    cookie_userName = name;
-    cookie_token = tosendtoken;
+
     // save the user details in the database here
 
     // set the token and username in the cookie
@@ -138,7 +136,7 @@ app.get("/auth/github", async (req, res) => {
     });
     
     // redirect the user to the frontend
-    res.redirect("http://localhost:5173/");
+    res.redirect(`http://localhost:5173?token=${tosendtoken}&username=${name}`);
   } catch (error) {
     res.status(500).json({ msg: "Something went wrong" });
   }
