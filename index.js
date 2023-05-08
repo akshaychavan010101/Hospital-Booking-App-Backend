@@ -136,7 +136,7 @@ app.get("/auth/github", async (req, res) => {
     res.json({cookie : req.cookies})
 
     // redirect the user to the frontend
-//     res.redirect("http://localhost:5173/");
+    res.redirect("http://localhost:5173/");
   } catch (error) {
     res.status(500).json({ msg: "Something went wrong" });
   }
