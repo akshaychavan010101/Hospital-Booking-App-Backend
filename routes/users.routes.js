@@ -146,7 +146,7 @@ UserRouter.post("/login", async (req, res) => {
               res.status(200).json({
               token,
               userName: user.name,
-              isAdmin : admin,
+              isAdmin : "admin",
               msg : "Login Successful"
             });
           return;
