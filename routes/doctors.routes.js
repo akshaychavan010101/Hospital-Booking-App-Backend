@@ -97,6 +97,7 @@ DoctorRouter.post("/add-doctor", async (req, res) => {
       msg: "Doctor added successfully",
     });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ msg: "Something went wrong" });
   }
 });
