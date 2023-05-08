@@ -61,17 +61,14 @@ UserRouter.get("/google-verify", async (req, res) => {
     // set the token , username in the cookie and redirect to the home page
 
     res.cookie("token", token, {
-      httpOnly: false,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
     res.cookie("userName", user.name, {
-      httpOnly: false,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
     
-    
-
+   
     res.redirect("http://localhost:5173/");
   } catch (error) {
     res.status(500).json({ msg: "Something went wrong" });
