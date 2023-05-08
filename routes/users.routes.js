@@ -141,6 +141,16 @@ UserRouter.post("/login", async (req, res) => {
             expiresIn: "7h",
           }
         );
+        
+        if(user.role == "admin"){
+              res.status(200).json({
+              token,
+              userName: user.name,
+              isAdmin : admin,
+              msg : "Login Successful"
+            });
+          return;
+        }
 
         res.status(200).json({
           token,
