@@ -59,7 +59,7 @@ UserRouter.get("/google-verify", async (req, res) => {
  
     
     // redirect the user to the frontend
-    res.redirect("http://localhost:5173/");
+     res.redirect(`http://localhost:5173?token=${token}&username=${displayName}`);
   } catch (error) {
     console.log(error)
     res.status(500).json({ msg: "Something went wrong*" , error  });
