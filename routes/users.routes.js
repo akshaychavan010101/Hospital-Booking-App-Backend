@@ -142,7 +142,7 @@ UserRouter.post("/login", async (req, res) => {
           }
         );
         
-        console.log(user , "***");
+      
         
         if(user.dataValues.role == "admin"){
               res.status(200).json({
