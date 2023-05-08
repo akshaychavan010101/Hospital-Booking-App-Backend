@@ -144,7 +144,7 @@ UserRouter.post("/login", async (req, res) => {
         
         console.log(user , "***");
         
-        if(user.role == "admin"){
+        if(user.dataValues.role == "admin"){
               res.status(200).json({
               token,
               userName: user.name,
