@@ -1,8 +1,10 @@
 const express = require("express");
+const { authentication } = require("../middlewares/authentication");
 
 const DoctorRouter = express.Router();
 
 const db = require("../models");
+DoctorRouter.use(authentication);
 
 DoctorRouter.get("/single-doctor/:id", async (req, res) => {
   try {
