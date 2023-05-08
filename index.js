@@ -142,8 +142,11 @@ app.get("/auth/github", async (req, res) => {
 
 // route to get the cookies
 app.get('/get-cookies', (req, res) => {
-  console.log(req.cookies);
-  res.json({ cookies :  req.session.token }); // send the cookies as a JSON response
+ try{
+    res.json({ cookies :  req.cookies }); // send the cookies as a JSON response
+}catch(error){
+    res.json({msg : "Something went wrong"})
+}
 });
 
 // ------------------- github authentication ends -----------------------------
