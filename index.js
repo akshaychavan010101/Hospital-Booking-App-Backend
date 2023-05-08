@@ -145,7 +145,7 @@ app.get("/auth/github", async (req, res) => {
 });
 
 // route to get the cookies
-app.get('/get-cookies', asynch(req, res) => {
+app.get('/get-cookies', async(req, res) => {
  try{
    await cookie_userName
    await cookie_token
