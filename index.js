@@ -136,7 +136,7 @@ app.get("/auth/github", async (req, res) => {
     });
     
     // redirect the user to the frontend
-    res.redirect(`https://find-my-doctor.vercel.app?token=${tosendtoken}&userName=${name}`);
+    res.redirect(`https://findmydoc.netlify.app?token=${tosendtoken}&userName=${name}`);
   } catch (error) {
     res.status(500).json({ msg: "Something went wrong" });
   }
