@@ -59,7 +59,7 @@ UserRouter.get("/google-verify", async (req, res) => {
  
     
     // redirect the user to the frontend
-     res.redirect(`https://find-my-doctor.vercel.app?token=${token}&userName=${displayName}`);
+     res.redirect(`https://findmydoctorapp.netlify.app?token=${token}&userName=${displayName}`);
   } catch (error) {
     console.log(error)
     res.status(500).json({ msg: "Something went wrong*" , error  });
