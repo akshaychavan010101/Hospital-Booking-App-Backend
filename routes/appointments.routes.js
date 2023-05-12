@@ -231,7 +231,7 @@ AppointmentRouter.get(
     try {
       const appointments = await db.appointments.findAll({
         where : {
-           patientId : id;
+           patientId : id
         }
       });
       res.status(200).json({
