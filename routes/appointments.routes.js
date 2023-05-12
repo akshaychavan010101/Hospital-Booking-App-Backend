@@ -225,6 +225,26 @@ AppointmentRouter.patch(
 
 AppointmentRouter.get(
   "/all-appointments",
+  auth(["user"]),
+  async (req, res) => {
+    const id = req.user.dataValues.id
+    try {
+      const appointments = await db.appointments.findAll({
+        where : {
+           patientId : id;
+        }
+      });
+      res.status(200).json({
+        appointments,
+      });
+    } catch (error) {
+      res.status(500).json({ msg: "Something went wrong" });
+    }
+  }
+);
+
+AppointmentRouter.get(
+  "/all-appointments",
   auth(["admin"]),
   async (req, res) => {
     try {
