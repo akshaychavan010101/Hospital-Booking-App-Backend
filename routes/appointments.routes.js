@@ -224,10 +224,10 @@ AppointmentRouter.patch(
 );
 
 AppointmentRouter.get(
-  "/all-appointments",
+  "/user-all-appointments",
   auth(["user"]),
   async (req, res) => {
-    const id = req.user.dataValues.id
+    const id = req.user.dataValues.id;
     try {
       const appointments = await db.appointments.findAll({
         where : {
