@@ -40,10 +40,7 @@ app.use("/user", UserRouter);
 app.use("/appointments", AppointmentRouter);
 app.use("/doctors", DoctorRouter);
 
-// app.get("/",(req,res)=>{
-//   app.use(express.static(path.join(__dirname,"../", "client")));
-//   res.sendFile(path.resolve(__dirname,"../", "client","index.html"));
-// });
+
 
 app.get("/", (req, res) => {
   res.send("Welcome to the Hospital Booking App");
