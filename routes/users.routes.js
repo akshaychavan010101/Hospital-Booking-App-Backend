@@ -62,7 +62,6 @@ UserRouter.get("/google-verify", async (req, res) => {
       `https://findmydoctorapp.netlify.app?token=${token}&userName=${displayName}`
     );
   } catch (error) {
-    console.log(error);
     res.status(500).json({ msg: "Something went wrong*", error });
   }
 });
@@ -79,7 +78,6 @@ UserRouter.get("/get-cookies", (req, res) => {
 
 // ------------------ google authentication  ends---------------------
 
-// -------------------- gihub authentication ends  -------------------------
 
 // -------------------- Normal routes -------------------------
 
@@ -163,7 +161,6 @@ UserRouter.post("/login", async (req, res) => {
       }
     });
   } catch (err) {
-    console.log(err);
     res.status(500).json({ msg: "Something went wrong" });
   }
 });

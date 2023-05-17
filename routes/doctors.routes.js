@@ -33,7 +33,6 @@ DoctorRouter.get("/single-doctor/:id", async (req, res) => {
       doctor,
     });
   } catch (error) {
-    console.log(error);
     res.status(500).json({ msg: "Something went wrong" });
   }
 });
@@ -104,7 +103,6 @@ DoctorRouter.post(
         msg: "Doctor added successfully",
       });
     } catch (error) {
-      console.log(error);
       res.status(500).json({ msg: "Something went wrong" });
     }
   }
@@ -117,7 +115,6 @@ DoctorRouter.get("/all-doctors", async (req, res) => {
       doctors,
     });
   } catch (error) {
-    console.log(error);
     res.status(500).json({ msg: "Something went wrong" });
   }
 });
@@ -144,7 +141,6 @@ DoctorRouter.delete(
         msg: "Doctor deleted successfully",
       });
     } catch (error) {
-      console.log(error);
       res.status(500).json({ msg: "Something went wrong" });
     }
   }
@@ -166,7 +162,6 @@ DoctorRouter.patch(
         msg: "Doctor updated successfully",
       });
     } catch (error) {
-      console.log(error);
       res.status(500).json({ msg: "Something went wrong" });
     }
   }
@@ -188,7 +183,6 @@ DoctorRouter.patch(
         msg: "Doctor description updated successfully",
       });
     } catch (error) {
-      console.log(error);
       res.status(500).json({ msg: "Something went wrong" });
     }
   }
