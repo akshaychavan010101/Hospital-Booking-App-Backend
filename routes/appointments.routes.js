@@ -5,9 +5,11 @@ const { authentication } = require("../middlewares/authentication");
 const AppointmentRouter = express.Router();
 
 const Sequelize = require("sequelize");
-const db = require("../models");
+
+const { Appointments } = require("../models/appointments");
 const { auth } = require("../middlewares/auth");
 const { slots } = require("../mongodb/slots.model");
+const { Doctors } = require("../models/doctors");
 
 // create all appointment routes over here
 AppointmentRouter.use(authentication);
@@ -28,8 +30,8 @@ AppointmentRouter.post("/book-appointment", async (req, res) => {
       return;
     }
 
-    const appointment = await db.appointments.create({
-      patientName :  req.user.dataValues.name,
+    const appointment = await Appointments.create({
+      patientName: req.user.dataValues.name,
       doctorName,
       date,
       time,
@@ -51,7 +53,7 @@ AppointmentRouter.post("/book-appointment", async (req, res) => {
 
     // reduce availability of doctor by 1
 
-    const doctor = await db.doctors.findOne({
+    const doctor = await Doctors.findOne({
       where: {
         id: doctorId,
       },
@@ -62,7 +64,7 @@ AppointmentRouter.post("/book-appointment", async (req, res) => {
       return;
     }
 
-    await db.doctors.update(
+    await Doctors.update(
       {
         availability: doctor.dataValues.availability - 1,
       },
@@ -111,7 +113,7 @@ AppointmentRouter.post("/check-slot-availability", async (req, res) => {
 
 AppointmentRouter.get("/my-appointments", async (req, res) => {
   try {
-    const appointments = await db.appointments.findAll({
+    const appointments = await Appointments.findAll({
       where: {
         patientId: req.user.dataValues.id,
       },
@@ -128,7 +130,7 @@ AppointmentRouter.get("/my-appointments", async (req, res) => {
 AppointmentRouter.delete("/delete-appointment/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const appointment = await db.appointments.findOne({
+    const appointment = await Appointments.findOne({
       where: {
         id,
       },
@@ -139,7 +141,7 @@ AppointmentRouter.delete("/delete-appointment/:id", async (req, res) => {
       return;
     }
 
-    await db.appointments.destroy({
+    await Appointments.destroy({
       where: {
         id,
       },
@@ -158,7 +160,7 @@ AppointmentRouter.patch(
     try {
       const { id } = req.params;
 
-      const appointment = await db.appointments.findOne({
+      const appointment = await Appointments.findOne({
         where: {
           id,
         },
@@ -169,7 +171,7 @@ AppointmentRouter.patch(
         return;
       }
 
-      await db.appointments.update(
+      await Appointments.update(
         {
           status: "approved",
         },
@@ -194,7 +196,7 @@ AppointmentRouter.patch(
     try {
       const { id } = req.params;
 
-      const appointment = await db.appointments.findOne({
+      const appointment = await Appointments.findOne({
         where: {
           id,
         },
@@ -205,7 +207,7 @@ AppointmentRouter.patch(
         return;
       }
 
-      await db.appointments.update(
+      await Appointments.update(
         {
           status: "cancelled",
         },
@@ -229,10 +231,10 @@ AppointmentRouter.get(
   async (req, res) => {
     const id = req.user.dataValues.id;
     try {
-      const appointments = await db.appointments.findAll({
-        where : {
-           patientId : id
-        }
+      const appointments = await Appointments.findAll({
+        where: {
+          patientId: id,
+        },
       });
       res.status(200).json({
         appointments,
@@ -248,7 +250,7 @@ AppointmentRouter.get(
   auth(["admin"]),
   async (req, res) => {
     try {
-      const appointments = await db.appointments.findAll({});
+      const appointments = await Appointments.findAll({});
       res.status(200).json({
         appointments,
       });
@@ -264,7 +266,7 @@ AppointmentRouter.get("/notifications", async (req, res) => {
   try {
     const Op = Sequelize.Op;
 
-    const notifications1 = await db.appointments.findAll({
+    const notifications1 = await Appointments.findAll({
       where: {
         patientId: req.user.dataValues.id,
         date: {
@@ -275,7 +277,7 @@ AppointmentRouter.get("/notifications", async (req, res) => {
       },
     });
 
-    const notifications2 = await db.appointments.findAll({
+    const notifications2 = await Appointments.findAll({
       where: {
         patientId: req.user.dataValues.id,
         status: {
@@ -306,7 +308,7 @@ AppointmentRouter.patch("/clear-notifications", async (req, res) => {
     // ids is an arr so update all the notifications with the ids
 
     ids.map(async (id) => {
-      await db.appointments.update(
+      await Appointments.update(
         {
           isNotified: true,
         },
@@ -324,6 +326,4 @@ AppointmentRouter.patch("/clear-notifications", async (req, res) => {
   }
 });
 
-
 module.exports = { AppointmentRouter };
-

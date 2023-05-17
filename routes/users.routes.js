@@ -1,10 +1,11 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
-const cookieParser = require('cookie-parser');
+const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
 const { auth } = require("../middlewares/auth");
 require("dotenv").config();
-const db = require("../models/index");
+// const db = require("../models/index");
+const { User } = require("../models/user");
 const { authentication } = require("../middlewares/authentication");
 const UserRouter = express.Router();
 
@@ -42,38 +43,38 @@ UserRouter.get("/google-verify", async (req, res) => {
     };
 
     // save the user details in the database here
-    const userInDb = await db.user.findOne({
+    const userInDb = await User.findOne({
       where: {
         email: user.email,
       },
     });
 
     if (!userInDb) {
-      await db.user.create(user);
+      await User.create(user);
     }
     //  send the token to the frontend
     const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET, {
       expiresIn: "7h",
     });
 
- 
-    
     // redirect the user to the frontend
-     res.redirect(`https://findmydoctorapp.netlify.app?token=${token}&userName=${displayName}`);
+    res.redirect(
+      `https://findmydoctorapp.netlify.app?token=${token}&userName=${displayName}`
+    );
   } catch (error) {
-    console.log(error)
-    res.status(500).json({ msg: "Something went wrong*" , error  });
+    console.log(error);
+    res.status(500).json({ msg: "Something went wrong*", error });
   }
 });
 
 // route to get the cookies
-UserRouter.get('/get-cookies', (req, res) => {
-  try{
-    res.json({ cookies :  req.cookies }); // send the cookies as a JSON response
-}catch(error){
-   res.status(500).json({ msg: "Something went wrong**" , error  });
-} 
-   // send the cookies as a JSON response
+UserRouter.get("/get-cookies", (req, res) => {
+  try {
+    res.json({ cookies: req.cookies }); // send the cookies as a JSON response
+  } catch (error) {
+    res.status(500).json({ msg: "Something went wrong**", error });
+  }
+  // send the cookies as a JSON response
 });
 
 // ------------------ google authentication  ends---------------------
@@ -87,7 +88,7 @@ UserRouter.post("/signup", async (req, res) => {
 
   const hash = bcrypt.hashSync(password, 5);
   try {
-    const user = await db.user.findOne({
+    const user = await User.findOne({
       where: {
         email,
       },
@@ -98,7 +99,7 @@ UserRouter.post("/signup", async (req, res) => {
       return;
     }
 
-    const data = await db.user.create({
+    const data = await User.create({
       name,
       email,
       mobile,
@@ -119,7 +120,7 @@ UserRouter.post("/signup", async (req, res) => {
 UserRouter.post("/login", async (req, res) => {
   const { email, password } = req.body;
   try {
-    const user = await db.user.findOne({
+    const user = await User.findOne({
       where: {
         email,
       },
@@ -141,26 +142,22 @@ UserRouter.post("/login", async (req, res) => {
             expiresIn: "7h",
           }
         );
-        
-      
-        
-        if(user.dataValues.role == "admin"){
-              res.status(200).json({
-              token,
-              userName: user.name,
-              isAdmin : "admin",
-              msg : "Login Successful"
-            });
-          return;
-        }else{
-           res.status(200).json({
-              token,
-              userName: user.name,
-              msg : "Login Successful"
-            });
-       }
 
-       
+        if (user.dataValues.role == "admin") {
+          res.status(200).json({
+            token,
+            userName: user.name,
+            isAdmin: "admin",
+            msg: "Login Successful",
+          });
+          return;
+        } else {
+          res.status(200).json({
+            token,
+            userName: user.name,
+            msg: "Login Successful",
+          });
+        }
       } else {
         res.status(400).json({ msg: "Invalid credentials" });
       }
@@ -202,7 +199,7 @@ UserRouter.get(
   auth(["admin"]),
   async (req, res) => {
     try {
-      const users = await db.user.findAll();
+      const users = await User.findAll();
       res.status(200).json({
         users,
       });
@@ -219,7 +216,7 @@ UserRouter.delete(
   async (req, res) => {
     try {
       const { id } = req.params;
-      const user = await db.user.findOne({
+      const user = await User.findOne({
         where: {
           id,
         },
@@ -230,7 +227,7 @@ UserRouter.delete(
         return;
       }
 
-      await db.user.destroy({
+      await User.destroy({
         where: {
           id,
         },
@@ -252,7 +249,7 @@ UserRouter.put(
       const { id } = req.params;
       const updatedValues = req.body;
 
-      const user = await db.user.findOne({
+      const user = await User.findOne({
         where: {
           id,
         },
@@ -263,7 +260,7 @@ UserRouter.put(
         return;
       }
 
-      await db.user.update(updatedValues, {
+      await User.update(updatedValues, {
         where: {
           id,
         },
@@ -282,7 +279,7 @@ UserRouter.get(
   auth(["admin"]),
   async (req, res) => {
     try {
-      const admins = await db.user.findAll({
+      const admins = await User.findAll({
         where: {
           role: "admin",
         },

@@ -1,6 +1,6 @@
 const express = require("express");
 const { UserRouter } = require("./routes/users.routes");
-const cookieParser = require('cookie-parser');
+const cookieParser = require("cookie-parser");
 require("dotenv").config();
 const db = require("./models/index");
 const cors = require("cors");
@@ -8,7 +8,8 @@ const path = require("path");
 // new code for google auth
 const session = require("express-session");
 const passport = require("passport");
-const { connection } = require("./config/db");
+const { sequelize, connection } = require("./config/db");
+const { User } = require("./models/user");
 const { v4: uuidv4 } = require("uuid");
 const { AppointmentRouter } = require("./routes/appointments.routes");
 // new code for github auth
@@ -16,7 +17,6 @@ const fetch = (...args) =>
   import("node-fetch").then(({ default: fetch }) => fetch(...args));
 const jwt = require("jsonwebtoken");
 const { DoctorRouter } = require("./routes/doctors.routes");
-
 
 // ------------
 
@@ -40,8 +40,6 @@ app.use("/user", UserRouter);
 app.use("/appointments", AppointmentRouter);
 app.use("/doctors", DoctorRouter);
 
-
-
 app.get("/", (req, res) => {
   res.send("Welcome to the Hospital Booking App");
 });
@@ -58,7 +56,6 @@ app.get(
       // Redirect user to the home page after authentication
       res.redirect("https://jittery-shirt-tuna.cyclic.app/user/google-verify");
     } catch (error) {
-      console.log(error);
       res.send(error.message);
     }
   }
@@ -103,14 +100,14 @@ app.get("/auth/github", async (req, res) => {
       mobile: "0000000000",
     };
 
-    const isUserpresent = await db.user.findOne({
+    const isUserpresent = await User.findOne({
       where: {
         email: user.email,
       },
     });
 
     if (!isUserpresent) {
-      await db.user.create(user);
+      await User.create(user);
     }
 
     const tosendtoken = jwt.sign(
@@ -121,7 +118,6 @@ app.get("/auth/github", async (req, res) => {
       }
     );
 
-
     // save the user details in the database here
 
     // set the token and username in the cookie
@@ -131,38 +127,50 @@ app.get("/auth/github", async (req, res) => {
     res.cookie("userName", user.name, {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
-    
+
     // redirect the user to the frontend
-    res.redirect(`https://findmydoctorapp.netlify.app?token=${tosendtoken}&userName=${name}`);
+    res.redirect(
+      `https://findmydoctorapp.netlify.app?token=${tosendtoken}&userName=${name}`
+    );
   } catch (error) {
     res.status(500).json({ msg: "Something went wrong" });
   }
 });
 
 // route to get the cookies
-app.get('/get-cookies', async(req, res) => {
- try{
-   await cookie_userName
-   await cookie_token
-   res.json({ userName : cookie_userName , token : cookie_token }); // send the cookies as a JSON response
-   cookie_userName = "user" ;
-   cookie_token = "token";
-}catch(error){
-    res.json({msg : "Something went wrong"})
-}
+app.get("/get-cookies", async (req, res) => {
+  try {
+    await cookie_userName;
+    await cookie_token;
+    res.json({ userName: cookie_userName, token: cookie_token }); // send the cookies as a JSON response
+    cookie_userName = "user";
+    cookie_token = "token";
+  } catch (error) {
+    res.json({ msg: "Something went wrong" });
+  }
 });
 
 // ------------------- github authentication ends -----------------------------
 
-db.sequelize.sync().then(() => {
-  app.listen(process.env.PORT, async () => {
-    try {
-      await connection;
-      console.log(
-        `Server is running on port ${process.env.PORT} and connected to DB`
-      );
-    } catch (error) {
-      console.log(error);
-    }
-  });
+// db.sequelize.sync().then(() => {
+app.listen(process.env.PORT, async () => {
+  try {
+    sequelize.authenticate();
+    sequelize
+      .sync()
+      .then(() => {
+        console.log("Database & tables created!");
+      })
+      .catch((error) => {
+        console.error("Error creating database tables:", error);
+      });
+
+    await connection;
+    console.log(
+      `Server is running on port ${process.env.PORT} and connected to DB`
+    );
+  } catch (error) {
+    console.log(error);
+  }
 });
+// });
